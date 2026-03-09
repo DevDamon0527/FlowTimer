@@ -4,15 +4,20 @@ import { useTheme } from './hooks/useTheme'
 import { useStats } from './hooks/useStats'
 import { useTitleFavicon } from './hooks/useTitleFavicon'
 import { minutesToMs } from './utils/format'
-import { resumeAudioContext, setSoundEnabled } from './utils/audio'
-import TimerDisplay from './components/TimerDisplay'
-import PhaseInfo from './components/PhaseInfo'
+import {
+  resumeAudioContext,
+  setSoundEnabled,
+  setAlarmSound,
+  type AlarmSoundType,
+} from './utils/audio'
+import TimerDisplay  from './components/TimerDisplay'
+import PhaseInfo     from './components/PhaseInfo'
 import TimerControls from './components/TimerControls'
 import SettingsPanel from './components/SettingsPanel'
-import ModeTabs from './components/ModeTabs'
-import StatsPanel from './components/StatsPanel'
+import ModeTabs      from './components/ModeTabs'
+import StatsPanel    from './components/StatsPanel'
 
-// ── Icon components (inline SVG, no external deps) ──────────────────────────
+// ── Inline SVG icons (no external deps) ─────────────────────────────────────
 
 function SunIcon() {
   return (
@@ -20,12 +25,12 @@ function SunIcon() {
       <circle cx="12" cy="12" r="4" />
       <line x1="12" y1="2"  x2="12" y2="6" />
       <line x1="12" y1="18" x2="12" y2="22" />
-      <line x1="4.22" y1="4.22" x2="7.05" y2="7.05" />
+      <line x1="4.22"  y1="4.22"  x2="7.05"  y2="7.05" />
       <line x1="16.95" y1="16.95" x2="19.78" y2="19.78" />
       <line x1="2"  y1="12" x2="6"  y2="12" />
       <line x1="18" y1="12" x2="22" y2="12" />
-      <line x1="4.22" y1="19.78" x2="7.05" y2="16.95" />
-      <line x1="16.95" y1="7.05" x2="19.78" y2="4.22" />
+      <line x1="4.22"  y1="19.78" x2="7.05"  y2="16.95" />
+      <line x1="16.95" y1="7.05"  x2="19.78" y2="4.22" />
     </svg>
   )
 }
@@ -58,27 +63,44 @@ function SoundOffIcon() {
   )
 }
 
-// ── App ──────────────────────────────────────────────────────────────────────
+// ── App ───────────────────────────────────────────────────────────────────────
 
 export default function App() {
   const { state, dispatch, getRemainingMs } = useTimer()
   const { theme, toggle: toggleTheme } = useTheme()
   const { stats } = useStats(state)
 
+  // ── Sound on/off (persisted to localStorage) ──────────────────────────────
   const [soundEnabled, setSoundEnabledState] = useState<boolean>(() => {
     try { return localStorage.getItem('focus-timer-sound') !== 'false' } catch { return true }
   })
 
-  // Keep audio module in sync
   useEffect(() => {
     setSoundEnabled(soundEnabled)
     try { localStorage.setItem('focus-timer-sound', String(soundEnabled)) } catch { /* ignore */ }
   }, [soundEnabled])
 
-  // Title + favicon (replaces the old document.title in useTimer)
+  // ── Alarm sound preset (persisted to localStorage) ────────────────────────
+  const [alarmSound, setAlarmSoundState] = useState<AlarmSoundType>(() => {
+    try {
+      const stored = localStorage.getItem('focus-timer-alarm-sound')
+      if (stored === 'beep1' || stored === 'beep2' || stored === 'softBell' || stored === 'digitalTone') {
+        return stored
+      }
+    } catch { /* ignore */ }
+    return 'beep1'
+  })
+
+  // Keep the audio module in sync whenever the React state changes
+  useEffect(() => {
+    setAlarmSound(alarmSound)
+    try { localStorage.setItem('focus-timer-alarm-sound', alarmSound) } catch { /* ignore */ }
+  }, [alarmSound])
+
+  // ── Title + favicon ───────────────────────────────────────────────────────
   useTitleFavicon(state, getRemainingMs)
 
-  // displayMs drives the UI countdown at 10fps
+  // ── UI countdown (re-renders at ~10 fps while running) ───────────────────
   const [displayMs, setDisplayMs] = useState(() => getRemainingMs())
   useEffect(() => {
     setDisplayMs(getRemainingMs())
@@ -91,29 +113,23 @@ export default function App() {
     state.phase === 'study' ? state.studyMinutes : state.breakMinutes,
   )
 
-  // Only show "next phase" hint in cycle mode
-  const nextPhaseDuration =
-    state.mode === 'cycle'
-      ? state.phase === 'study'
-        ? state.breakMinutes
-        : state.studyMinutes
-      : null
+  // ── Control handlers ──────────────────────────────────────────────────────
 
-  const handleStart = useCallback(() => {
-    resumeAudioContext()
-    dispatch({ type: 'START' })
-  }, [dispatch])
+  const handleStart  = useCallback(() => { resumeAudioContext(); dispatch({ type: 'START' }) },  [dispatch])
+  const handlePause  = useCallback(() => dispatch({ type: 'PAUSE' }),                            [dispatch])
+  const handleResume = useCallback(() => { resumeAudioContext(); dispatch({ type: 'RESUME' }) }, [dispatch])
+  const handleReset  = useCallback(() => dispatch({ type: 'RESET' }),                            [dispatch])
 
-  const handlePause   = useCallback(() => dispatch({ type: 'PAUSE' }),   [dispatch])
-  const handleResume  = useCallback(() => { resumeAudioContext(); dispatch({ type: 'RESUME' }) }, [dispatch])
-  const handleReset   = useCallback(() => dispatch({ type: 'RESET' }),   [dispatch])
+  // ── Render ────────────────────────────────────────────────────────────────
 
   return (
     <div className={`app app--${state.phase}`}>
-      {/* ── Header ─────────────────────────────────────────────────────── */}
+
+      {/* ── Header ──────────────────────────────────────────────────────── */}
       <header className="app-header">
         <h1 className="app-title">{state.title || '집중 타이머'}</h1>
         <div className="header-actions">
+          {/* Sound on/off toggle */}
           <button
             className={`icon-btn${!soundEnabled ? ' icon-btn--off' : ''}`}
             onClick={() => setSoundEnabledState((v) => !v)}
@@ -122,6 +138,7 @@ export default function App() {
           >
             {soundEnabled ? <SoundOnIcon /> : <SoundOffIcon />}
           </button>
+          {/* Theme toggle */}
           <button
             className="icon-btn"
             onClick={toggleTheme}
@@ -133,24 +150,29 @@ export default function App() {
         </div>
       </header>
 
-      {/* ── Main ───────────────────────────────────────────────────────── */}
+      {/* ── Main ────────────────────────────────────────────────────────── */}
       <main className="app-main">
+        {/* Mode selector tabs (cycle / focus-only / break-only) */}
         <ModeTabs
           mode={state.mode}
           onChange={(mode) => dispatch({ type: 'SET_MODE', payload: mode })}
           disabled={state.status !== 'idle'}
         />
 
+        {/* Phase info card: current phase, cycle count, next step */}
         <PhaseInfo
           phase={state.phase}
           mode={state.mode}
           cycle={state.cycle}
           status={state.status}
-          nextPhaseDuration={nextPhaseDuration}
+          studyMinutes={state.studyMinutes}
+          breakMinutes={state.breakMinutes}
         />
 
+        {/* Circular progress ring + countdown digits */}
         <TimerDisplay displayMs={displayMs} totalMs={totalMs} phase={state.phase} />
 
+        {/* Start / Pause / Resume / Reset buttons */}
         <TimerControls
           status={state.status}
           onStart={handleStart}
@@ -160,19 +182,26 @@ export default function App() {
         />
       </main>
 
-      {/* ── Footer ─────────────────────────────────────────────────────── */}
+      {/* ── Footer ──────────────────────────────────────────────────────── */}
       <footer className="app-footer">
-        <StatsPanel todayMs={stats.todayMs} totalMs={stats.totalMs} />
+        {/* Today stats: focus / break / total */}
+        <StatsPanel
+          todayFocusMs={stats.todayFocusMs}
+          todayBreakMs={stats.todayBreakMs}
+          todayTotalMs={stats.todayTotalMs}
+        />
+        {/* Timer duration + alarm sound settings */}
         <SettingsPanel
           studyMinutes={state.studyMinutes}
           breakMinutes={state.breakMinutes}
-          title={state.title}
+          alarmSound={alarmSound}
           status={state.status}
           onStudyChange={(v) => dispatch({ type: 'SET_STUDY_MINUTES', payload: v })}
           onBreakChange={(v) => dispatch({ type: 'SET_BREAK_MINUTES', payload: v })}
-          onTitleChange={(v) => dispatch({ type: 'SET_TITLE', payload: v })}
+          onAlarmSoundChange={(v) => setAlarmSoundState(v)}
         />
       </footer>
+
     </div>
   )
 }

@@ -202,22 +202,13 @@ body {
   padding: 36px 24px;
 }
 
-/* ── Phase Info ─────────────────────────────────────────────────────────── */
-.phase-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  min-height: 76px;
-  justify-content: center;
-}
-
+/* ── Phase Badge (shared token) ─────────────────────────────────────────── */
 .phase-badge {
   display: inline-flex;
   align-items: center;
-  padding: 7px 18px;
+  padding: 9px 22px;
   border-radius: var(--radius-full);
-  font-size: 0.8rem;
+  font-size: 0.86rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -234,16 +225,91 @@ body {
   color: var(--color-break);
 }
 
-.cycle-count {
-  font-size: 0.75rem;
+/* ── Phase Card ─────────────────────────────────────────────────────────── */
+/* Replaces the old .phase-info / .cycle-count / .next-hint structure       */
+
+.phase-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 18px 24px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top row: mode label (left) + cycle pill (right) */
+.phase-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.phase-card__mode {
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.phase-card__cycle {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 3px 11px;
+}
+
+/* Center: current phase badge */
+.phase-card__phase {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+/* Bottom: next step hint */
+.phase-card__next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  border-top: 1px solid var(--color-border);
+  padding: 12px 0;
+  transition: opacity 0.2s ease;
+}
+
+.phase-card__next--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.phase-card__next-arrow {
   color: var(--color-text-muted);
   font-weight: 600;
   letter-spacing: 0.04em;
 }
 
-.next-hint {
-  font-size: 0.72rem;
+.phase-card__next-chevron {
   color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.phase-card__next-label {
+  font-weight: 600;
+  color: var(--color-text-2);
+}
+
+.phase-card__next-duration {
+  color: var(--color-text-muted);
+  font-weight: 400;
 }
 
 /* ── Timer Display ──────────────────────────────────────────────────────── */
@@ -416,6 +482,15 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Color-coded stat values for quick visual differentiation */
+.stat-value--study {
+  color: var(--color-study);
+}
+
+.stat-value--break {
+  color: var(--color-break);
+}
+
 /* ── Settings Panel ─────────────────────────────────────────────────────── */
 .settings-panel {
   display: flex;
@@ -502,17 +577,74 @@ body {
   -webkit-appearance: none;
 }
 
-.settings-input--title {
-  width: 130px;
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-}
-
 .settings-unit {
   font-size: 0.72rem;
   color: var(--color-text-muted);
   font-weight: 700;
   letter-spacing: 0.04em;
+}
+
+/* ── Alarm sound selector ────────────────────────────────────────────────── */
+.settings-alarm-group {
+  align-items: center;  /* override baseline for select + button */
+  gap: 8px;
+}
+
+.settings-select {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 500;
+  outline: none;
+  padding: 3px 0;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.settings-select:focus {
+  border-bottom-color: var(--color-study);
+}
+
+.app--break .settings-select:focus {
+  border-bottom-color: var(--color-break);
+}
+
+/* Small "▶" preview button next to the sound selector */
+.settings-preview-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: 0.6rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.settings-preview-btn:hover {
+  background: var(--color-surface-3);
+  border-color: var(--color-border-hover);
+  color: var(--color-text);
+}
+
+.settings-preview-btn:focus-visible {
+  outline: 2px solid var(--color-study);
+  outline-offset: 2px;
+}
+
+.settings-preview-btn:active {
+  transform: scale(0.92);
 }
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */

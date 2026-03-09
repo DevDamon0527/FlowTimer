@@ -3,7 +3,7 @@ import type { TimerState } from '../types/timer'
 import { setFavicon } from '../utils/favicon'
 
 // ── Constants — adjust thresholds here ──────────────────────────────────────
-const WARNING_THRESHOLD_MS = 60_000  // start warning blink at 60 s remaining
+const WARNING_THRESHOLD_MS = 10_000  // start warning blink at 10 s remaining
 
 const COLORS = {
   study:        '#6366f1',  // indigo
