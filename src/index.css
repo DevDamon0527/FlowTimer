@@ -71,7 +71,8 @@ body {
 
 /* ── App Layout ─────────────────────────────────────────────────────────── */
 .app {
-  min-height: 100dvh;
+  height: 100dvh;
+  min-height: 580px; /* 너무 작은 화면에서 최소 높이 보장 */
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-areas: "header" "main" "footer";
@@ -85,7 +86,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 28px 32px 0;
+  padding: 18px 28px 0;
 }
 
 .app-title {
@@ -148,7 +149,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 24px;
+  padding: 8px 20px;
   border: none;
   border-radius: var(--radius-full);
   background: transparent;
@@ -198,8 +199,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 28px;
-  padding: 36px 24px;
+  gap: 16px;
+  padding: 20px 24px;
 }
 
 /* ── Phase Badge (shared token) ─────────────────────────────────────────── */
@@ -225,29 +226,28 @@ body {
   color: var(--color-break);
 }
 
-/* ── Phase Card ─────────────────────────────────────────────────────────── */
-/* Replaces the old .phase-info / .cycle-count / .next-hint structure       */
+/* ── Info Card (현재 phase + 오늘 통계 통합) ────────────────────────────── */
 
-.phase-card {
+.info-card {
   width: 100%;
-  max-width: 360px;
+  max-width: 440px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 18px 24px 0;
   display: flex;
   flex-direction: column;
 }
 
-/* Top row: mode label (left) + cycle pill (right) */
-.phase-card__meta {
+/* 상단 메타 행: 모드 레이블 + 사이클 배지 */
+.info-card__meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.phase-card__mode {
+.info-card__mode {
   font-size: 0.67rem;
   font-weight: 700;
   letter-spacing: 0.13em;
@@ -255,61 +255,136 @@ body {
   color: var(--color-text-muted);
 }
 
-.phase-card__cycle {
-  font-size: 0.7rem;
+.info-card__cycle {
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--color-text-muted);
   background: var(--color-surface-2);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
-  padding: 3px 11px;
+  padding: 2px 10px;
 }
 
-/* Center: current phase badge */
-.phase-card__phase {
+/* 본문: 왼쪽 phase 배지 / 세로 divider / 오른쪽 통계 */
+.info-card__body {
   display: flex;
-  justify-content: center;
-  margin-bottom: 16px;
+  align-items: center;
+  padding: 14px 18px;
 }
 
-/* Bottom: next step hint */
-.phase-card__next {
+.info-card__phase-col {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  font-size: 0.72rem;
+}
+
+/* 세로 구분선 */
+.info-card__divider {
+  width: 1px;
+  height: 56px;
+  background: var(--color-border);
+  flex-shrink: 0;
+  margin: 0 18px;
+}
+
+/* 오른쪽 통계 영역 */
+.info-card__stats-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.info-card__stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.info-card__stat-label {
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.info-card__stat-value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+.info-card__stat-value--study { color: var(--color-study); }
+.info-card__stat-value--break { color: var(--color-break); }
+
+.info-card__stat-sep {
+  height: 1px;
+  background: var(--color-border);
+}
+
+/* 하단: 다음 단계 힌트 (항상 렌더링, hidden 시 opacity 0) */
+.info-card__next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   border-top: 1px solid var(--color-border);
-  padding: 12px 0;
+  padding: 9px 18px;
   transition: opacity 0.2s ease;
 }
 
-.phase-card__next--hidden {
+.info-card__next--hidden {
   opacity: 0;
   pointer-events: none;
 }
 
-.phase-card__next-arrow {
+.info-card__next-prefix {
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--color-text-muted);
-  font-weight: 600;
-  letter-spacing: 0.04em;
 }
 
-.phase-card__next-chevron {
-  color: var(--color-text-muted);
-  font-size: 1rem;
+/* 다음 단계 색상 배지 */
+.info-card__next-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.71rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   line-height: 1;
 }
 
-.phase-card__next-label {
-  font-weight: 600;
-  color: var(--color-text-2);
+.info-card__next-badge--break {
+  background: var(--color-break-dim);
+  color: var(--color-break);
+  border: 1px solid rgba(16, 185, 129, 0.25);
 }
 
-.phase-card__next-duration {
-  color: var(--color-text-muted);
+.info-card__next-badge--study {
+  background: var(--color-study-dim);
+  color: var(--color-study);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.info-card__next-badge-dot {
+  opacity: 0.5;
   font-weight: 400;
+}
+
+.info-card__next-badge-duration {
+  opacity: 0.75;
+  font-weight: 500;
 }
 
 /* ── Timer Display ──────────────────────────────────────────────────────── */
@@ -345,7 +420,7 @@ body {
 
 .timer-digits {
   font-family: var(--font-mono);
-  font-size: clamp(3.2rem, 12vw, 5.8rem);
+  font-size: clamp(2.6rem, 9vw, 4.4rem);
   font-weight: 300;
   letter-spacing: 0.04em;
   color: var(--color-text);
@@ -391,8 +466,8 @@ body {
 .btn--primary {
   background: var(--color-study);
   color: #fff;
-  font-size: 1.05rem;
-  padding: 15px 52px;
+  font-size: 1rem;
+  padding: 13px 44px;
 }
 
 .btn--primary:hover {
@@ -406,8 +481,8 @@ body {
 .btn--secondary {
   background: var(--color-surface-2);
   color: var(--color-text);
-  font-size: 1.05rem;
-  padding: 15px 52px;
+  font-size: 1rem;
+  padding: 13px 44px;
   border: 1px solid var(--color-border);
 }
 
@@ -419,8 +494,8 @@ body {
 .btn--ghost {
   background: transparent;
   color: var(--color-text-muted);
-  font-size: 0.88rem;
-  padding: 15px 22px;
+  font-size: 0.86rem;
+  padding: 13px 20px;
 }
 
 .btn--ghost:hover {
@@ -428,82 +503,74 @@ body {
   background: var(--color-surface-2);
 }
 
+/* 초기화 버튼 — 호버 시 붉은 경고 느낌 */
+.btn--reset:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.25);
+}
+.btn--reset:active {
+  background: rgba(239, 68, 68, 0.14);
+}
+
 /* ── Footer ─────────────────────────────────────────────────────────────── */
 .app-footer {
   grid-area: footer;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 0 24px 36px;
+  gap: 10px;
+  padding: 0 24px 20px;
 }
 
-/* ── Stats Panel ─────────────────────────────────────────────────────────── */
-.stats-panel {
+
+/* ── Settings Panel ─────────────────────────────────────────────────────── */
+/*
+  overflow: hidden 의도적으로 제거 —
+  .alarm-select__list 가 패널 바깥(위쪽)으로 열리므로
+  overflow: hidden 이 있으면 드롭다운이 패널 경계에서 잘린다.
+  대신 헤더의 상단 모서리 라운드는 border-radius 직접 지정으로 처리.
+*/
+.settings-panel {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 20px 24px;
+  padding: 0;
   max-width: 600px;
   margin: 0 auto;
   width: 100%;
 }
 
-.stat-card {
+/* 패널 헤더 — '여기가 설정 영역'임을 명확히 전달 */
+.settings-panel__header {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 5px;
-  flex: 1;
-  padding: 0 16px;
-}
-
-.stat-sep {
-  width: 1px;
-  height: 38px;
-  background: var(--color-border);
-  flex-shrink: 0;
-}
-
-.stat-label {
-  font-size: 0.7rem;
+  gap: 6px;
+  padding: 9px 20px;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  /* overflow: hidden 없이 border-radius를 직접 지정해 라운드 처리 */
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
-.stat-value {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--color-text);
-  font-variant-numeric: tabular-nums;
+.settings-panel__header-icon {
+  font-size: 0.75rem;
+  opacity: 0.7;
 }
 
-/* Color-coded stat values for quick visual differentiation */
-.stat-value--study {
-  color: var(--color-study);
-}
-
-.stat-value--break {
-  color: var(--color-break);
-}
-
-/* ── Settings Panel ─────────────────────────────────────────────────────── */
-.settings-panel {
+/* 헤더 아래 실제 설정 행들 감싸는 body */
+.settings-panel__body {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 16px 20px;
-  max-width: 600px;
-  margin: 0 auto;
-  width: 100%;
+  padding: 10px 20px;
 }
 
 .settings-row {
@@ -592,9 +659,12 @@ body {
   gap: 8px;
 }
 
-/* 트리거 버튼 — 닫힌 상태에서 선택값을 보여주는 클릭 영역 */
+/* 트리거 버튼 — 닫힌 상태에서 선택값을 보여주는 클릭 영역
+   isolation: isolate 로 독자적인 stacking context 생성
+   → 자식 z-index 가 외부 요소와 충돌 없이 동작 */
 .alarm-select {
   position: relative;
+  isolation: isolate;
 }
 
 .alarm-select__trigger {
@@ -636,7 +706,9 @@ body {
   transform: rotate(180deg);
 }
 
-/* 옵션 목록 — 위로 열려 화면 하단 잘림을 방지 */
+/* 옵션 목록 — 위로 열려 화면 하단 잘림을 방지
+   z-index: 200으로 모든 카드 레이어보다 확실히 위에 표시.
+   부모(.settings-panel)에 overflow: hidden 없음 → 잘림 없음. */
 .alarm-select__list {
   position: absolute;
   bottom: calc(100% + 6px);
@@ -647,8 +719,8 @@ body {
   border-radius: var(--radius-md);
   padding: 4px;
   list-style: none;
-  z-index: 100;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.18);
+  z-index: 200;
+  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.22);
 }
 
 /* 각 옵션 항목 */
@@ -715,63 +787,59 @@ body {
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .app-header {
-    padding: 20px 20px 0;
+    padding: 14px 16px 0;
   }
 
   .app-main {
-    gap: 22px;
-    padding: 28px 16px;
+    gap: 12px;
+    padding: 14px 14px;
   }
 
   .app-footer {
-    padding: 0 16px 28px;
-    gap: 12px;
+    padding: 0 14px 16px;
+    gap: 8px;
   }
 
   .mode-tab {
-    padding: 9px 16px;
-    font-size: 0.82rem;
+    padding: 8px 14px;
+    font-size: 0.8rem;
   }
 
-  .settings-panel,
-  .stats-panel {
-    padding: 14px 12px;
+  .settings-panel__header {
+    padding: 8px 14px;
+  }
+
+  .settings-panel__body {
+    padding: 8px 10px;
   }
 
   .settings-row {
-    padding: 4px 10px;
+    padding: 3px 8px;
   }
 
-  .settings-sep,
-  .stat-sep {
-    height: 24px;
+  .settings-sep {
+    height: 22px;
   }
 
   .btn--primary,
   .btn--secondary {
-    padding: 13px 40px;
-    font-size: 0.98rem;
+    padding: 11px 36px;
+    font-size: 0.95rem;
   }
 
-  .stat-value {
-    font-size: 1rem;
+  .info-card__body {
+    padding: 10px 14px;
+  }
+
+  .info-card__divider {
+    height: 44px;
+    margin: 0 12px;
   }
 }
 
 @media (min-width: 640px) {
-  .app-main {
-    gap: 36px;
-    padding: 48px 32px;
-  }
-
   .app-footer {
-    padding: 0 32px 44px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .app-main {
-    gap: 40px;
+    padding: 0 28px 22px;
   }
 }
 

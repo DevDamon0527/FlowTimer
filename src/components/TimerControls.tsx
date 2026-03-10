@@ -30,7 +30,7 @@ export default function TimerControls({ status, onStart, onPause, onResume, onRe
       )}
 
       {status !== 'idle' && (
-        <button className="btn btn--ghost" onClick={onReset} aria-label="타이머 초기화">
+        <button className="btn btn--ghost btn--reset" onClick={onReset} aria-label="타이머 초기화">
           초기화
         </button>
       )}

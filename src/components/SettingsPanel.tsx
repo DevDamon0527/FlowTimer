@@ -173,6 +173,14 @@ export default function SettingsPanel({
   return (
     <div className="settings-panel" aria-label="타이머 설정">
 
+      {/* 패널 헤더 — 이 영역이 '설정'임을 명확히 */}
+      <div className="settings-panel__header">
+        <span className="settings-panel__header-icon" aria-hidden="true">⚙</span>
+        타이머 설정
+      </div>
+
+      <div className="settings-panel__body">
+
       {/* 공부 시간 */}
       <div className="settings-row">
         <label className="settings-label" htmlFor="input-study">공부</label>
@@ -237,6 +245,8 @@ export default function SettingsPanel({
           </button>
         </div>
       </div>
+
+      </div>{/* settings-panel__body */}
 
     </div>
   )

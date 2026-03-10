@@ -63,10 +63,12 @@ export default function PhaseInfo({
         `phase-card__next--hidden` makes it invisible but keeps the space.
       */}
       <div className={`phase-card__next${showNext ? '' : ' phase-card__next--hidden'}`} aria-hidden={!showNext}>
-        <span className="phase-card__next-arrow">다음</span>
-        <span className="phase-card__next-chevron">›</span>
-        <span className="phase-card__next-label">{nextLabel}</span>
-        <span className="phase-card__next-duration">{nextDuration}분</span>
+        <span className="phase-card__next-prefix">다음</span>
+        <div className={`phase-card__next-badge phase-card__next-badge--${nextPhase}`}>
+          <span>{nextLabel}</span>
+          <span className="phase-card__next-badge-dot">·</span>
+          <span className="phase-card__next-badge-duration">{nextDuration}분</span>
+        </div>
       </div>
 
     </div>

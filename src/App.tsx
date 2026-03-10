@@ -12,11 +12,10 @@ import {
   type AlarmSoundType,
 } from './utils/audio'
 import TimerDisplay  from './components/TimerDisplay'
-import PhaseInfo     from './components/PhaseInfo'
+import InfoCard      from './components/InfoCard'
 import TimerControls from './components/TimerControls'
 import SettingsPanel from './components/SettingsPanel'
 import ModeTabs      from './components/ModeTabs'
-import StatsPanel    from './components/StatsPanel'
 
 // ── Inline SVG icons (no external deps) ─────────────────────────────────────
 
@@ -161,14 +160,17 @@ export default function App() {
           disabled={state.status !== 'idle'}
         />
 
-        {/* Phase info card: current phase, cycle count, next step */}
-        <PhaseInfo
+        {/* Phase 정보 + 오늘 통계 통합 카드 */}
+        <InfoCard
           phase={state.phase}
           mode={state.mode}
           cycle={state.cycle}
           status={state.status}
           studyMinutes={state.studyMinutes}
           breakMinutes={state.breakMinutes}
+          todayFocusMs={stats.todayFocusMs}
+          todayBreakMs={stats.todayBreakMs}
+          todayTotalMs={stats.todayTotalMs}
         />
 
         {/* Circular progress ring + countdown digits */}
@@ -186,12 +188,6 @@ export default function App() {
 
       {/* ── Footer ──────────────────────────────────────────────────────── */}
       <footer className="app-footer">
-        {/* Today stats: focus / break / total */}
-        <StatsPanel
-          todayFocusMs={stats.todayFocusMs}
-          todayBreakMs={stats.todayBreakMs}
-          todayTotalMs={stats.todayTotalMs}
-        />
         {/* Timer duration + alarm sound settings */}
         <SettingsPanel
           studyMinutes={state.studyMinutes}
