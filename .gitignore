@@ -56,6 +56,7 @@ $RECYCLE.BIN/
 *.sw?
 
 # ── Claude / AI Workflow ─────────────────────────────────────────────────────
+.claude/
 claude_en.md
 claude.md
 CLAUDE.md
