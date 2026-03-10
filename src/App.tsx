@@ -8,6 +8,7 @@ import {
   resumeAudioContext,
   setSoundEnabled,
   setAlarmSound,
+  ALARM_SOUND_OPTIONS,
   type AlarmSoundType,
 } from './utils/audio'
 import TimerDisplay  from './components/TimerDisplay'
@@ -84,8 +85,9 @@ export default function App() {
   const [alarmSound, setAlarmSoundState] = useState<AlarmSoundType>(() => {
     try {
       const stored = localStorage.getItem('focus-timer-alarm-sound')
-      if (stored === 'beep1' || stored === 'beep2' || stored === 'softBell' || stored === 'digitalTone') {
-        return stored
+      // ALARM_SOUND_OPTIONS 기반으로 유효성 확인 — 새 preset 추가 시 자동 대응
+      if (stored && ALARM_SOUND_OPTIONS.some(o => o.value === stored)) {
+        return stored as AlarmSoundType
       }
     } catch { /* ignore */ }
     return 'beep1'

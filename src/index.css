@@ -584,13 +584,23 @@ body {
   letter-spacing: 0.04em;
 }
 
-/* ── Alarm sound selector ────────────────────────────────────────────────── */
+/* ── 알람음 커스텀 드롭다운 ──────────────────────────────────────────────── */
+/* 네이티브 select의 option은 OS가 렌더링해 CSS 색상 제어가 불가능하므로 직접 구현 */
+
 .settings-alarm-group {
-  align-items: center;  /* override baseline for select + button */
+  align-items: center;
   gap: 8px;
 }
 
-.settings-select {
+/* 트리거 버튼 — 닫힌 상태에서 선택값을 보여주는 클릭 영역 */
+.alarm-select {
+  position: relative;
+}
+
+.alarm-select__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: transparent;
   border: none;
   border-bottom: 1px solid transparent;
@@ -598,23 +608,78 @@ body {
   font-family: var(--font-sans);
   font-size: 0.9rem;
   font-weight: 500;
-  outline: none;
   padding: 3px 0;
   cursor: pointer;
+  outline: none;
   transition: border-color 0.15s ease;
-  -webkit-appearance: none;
-  appearance: none;
 }
 
-.settings-select:focus {
+.alarm-select__trigger:focus-visible,
+.alarm-select__trigger--open {
   border-bottom-color: var(--color-study);
 }
 
-.app--break .settings-select:focus {
+.app--break .alarm-select__trigger:focus-visible,
+.app--break .alarm-select__trigger--open {
   border-bottom-color: var(--color-break);
 }
 
-/* Small "▶" preview button next to the sound selector */
+.alarm-select__arrow {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  line-height: 1;
+  /* 열린 상태에서 화살표 방향 반전 */
+  transition: transform 0.15s ease;
+}
+
+.alarm-select__trigger--open .alarm-select__arrow {
+  transform: rotate(180deg);
+}
+
+/* 옵션 목록 — 위로 열려 화면 하단 잘림을 방지 */
+.alarm-select__list {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  min-width: 140px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-hover);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  list-style: none;
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* 각 옵션 항목 */
+.alarm-select__option {
+  padding: 7px 12px;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--color-text);       /* 다크/라이트 모두 명확한 텍스트 */
+  background: transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  user-select: none;
+}
+
+.alarm-select__option:hover {
+  background: var(--color-surface-3);
+}
+
+/* 선택된 항목 — 테마 accent 색으로 강조 */
+.alarm-select__option--selected {
+  color: var(--color-study);
+  background: var(--color-study-dim);
+}
+
+.app--break .alarm-select__option--selected {
+  color: var(--color-break);
+  background: var(--color-break-dim);
+}
+
+/* 미리듣기 "▶" 버튼 */
 .settings-preview-btn {
   display: inline-flex;
   align-items: center;
