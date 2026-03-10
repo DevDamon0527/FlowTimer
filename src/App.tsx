@@ -160,20 +160,7 @@ export default function App() {
           disabled={state.status !== 'idle'}
         />
 
-        {/* Phase 정보 + 오늘 통계 통합 카드 */}
-        <InfoCard
-          phase={state.phase}
-          mode={state.mode}
-          cycle={state.cycle}
-          status={state.status}
-          studyMinutes={state.studyMinutes}
-          breakMinutes={state.breakMinutes}
-          todayFocusMs={stats.todayFocusMs}
-          todayBreakMs={stats.todayBreakMs}
-          todayTotalMs={stats.todayTotalMs}
-        />
-
-        {/* Circular progress ring + countdown digits */}
+        {/* Circular progress ring + countdown digits — 핵심 UI, 최우선 배치 */}
         <TimerDisplay displayMs={displayMs} totalMs={totalMs} phase={state.phase} />
 
         {/* Start / Pause / Resume / Reset buttons */}
@@ -188,6 +175,18 @@ export default function App() {
 
       {/* ── Footer ──────────────────────────────────────────────────────── */}
       <footer className="app-footer">
+        {/* Phase 정보 + 오늘 통계 — 보조 정보, settings-panel과 함께 footer에 배치 */}
+        <InfoCard
+          phase={state.phase}
+          mode={state.mode}
+          cycle={state.cycle}
+          status={state.status}
+          studyMinutes={state.studyMinutes}
+          breakMinutes={state.breakMinutes}
+          todayFocusMs={stats.todayFocusMs}
+          todayBreakMs={stats.todayBreakMs}
+          todayTotalMs={stats.todayTotalMs}
+        />
         {/* Timer duration + alarm sound settings */}
         <SettingsPanel
           studyMinutes={state.studyMinutes}

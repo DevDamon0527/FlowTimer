@@ -15,7 +15,7 @@ export default function TimerDisplay({ displayMs, totalMs, phase }: Props) {
   return (
     <div className="timer-display">
       <div className="timer-ring-wrapper">
-        <ProgressRing progress={progress} phase={phase} size={240} strokeWidth={6} />
+        <ProgressRing progress={progress} phase={phase} size={300} strokeWidth={7} />
         <div className="timer-time">
           <span
             className="timer-digits"
