@@ -396,10 +396,6 @@ body {
   border: 1px solid var(--color-border);
 }
 
-.info-card__next-badge-dot {
-  opacity: 0.5;
-  font-weight: 400;
-}
 
 .info-card__next-badge-duration {
   opacity: 0.75;
@@ -422,6 +418,8 @@ body {
   display: block;
   filter: drop-shadow(0 0 20px var(--color-study-glow));
   transition: filter 0.4s ease;
+  max-width: min(450px, 48vh);
+  max-height: min(450px, 48vh);
 }
 
 .app--break .progress-ring {

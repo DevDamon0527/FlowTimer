@@ -69,9 +69,8 @@ export default function InfoCard({
       <div className="info-card__body">
 
         {/* 왼쪽: 현재 phase 배지 + 다음 단계 힌트 */}
-        <div className="info-card__phase-col">
+        <div className="info-card__phase-col" style={{ gap: isCycleMode ? undefined : 0 }}>
           <div className={`phase-badge phase-badge--${phase}`}>
-            <span className="phase-badge__dot" aria-hidden="true" />
             <span className="phase-badge__text">{phaseLabel}</span>
           </div>
 
@@ -79,10 +78,15 @@ export default function InfoCard({
             사이클 힌트를 항상 DOM에 렌더링하고 visibility로 제어.
             → 사이클/비사이클 모드 전환 시 phase-col 높이가 유지됨.
             실행 중: 컬러 배지 / 대기 중: 뮤트 배지 (동일 크기)
+            비사이클 모드: height:0 + overflow:hidden 으로 공간 완전 제거
           */}
           <div
             className="info-card__phase-hint"
-            style={{ visibility: isCycleMode ? 'visible' : 'hidden' }}
+            style={{
+              visibility: isCycleMode ? 'visible' : 'hidden',
+              height: isCycleMode ? undefined : 0,
+              overflow: 'hidden',
+            }}
             aria-hidden={!isCycleMode}
           >
             <div className={nextBadgeClass}>
