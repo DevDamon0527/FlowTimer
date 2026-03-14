@@ -727,6 +727,14 @@ body {
   border-bottom-color: var(--color-break);
 }
 
+/* 알람명 텍스트 — 너비를 고정해 긴 이름이 설정 행을 2줄로 밀지 않도록 방지 */
+.alarm-select__label {
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .alarm-select__arrow {
   font-size: 0.65rem;
   color: var(--color-text-muted);
