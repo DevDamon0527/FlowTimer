@@ -145,9 +145,12 @@ export function useTimer() {
   const singleModeCompletedRef = useRef(false)
   const rafRef = useRef<number | null>(null)
 
-  // ── RAF loop (mounted once, reads state via stateRef) ────────────────────
+  // ── RAF loop + setInterval fallback ─────────────────────────────────────
+  // RAF는 백그라운드 탭에서 중단되므로, setInterval을 백업으로 함께 실행.
+  // 포그라운드: RAF(~60fps)가 처리 / 백그라운드: setInterval(~1s)이 처리
+  // advancingRef 플래그로 양쪽이 동시에 디스패치하는 중복 실행 방지.
   useEffect(() => {
-    const tick = () => {
+    const checkAdvance = () => {
       const s = stateRef.current
 
       if (s.status === 'running' && s.endTime !== null) {
@@ -163,13 +166,19 @@ export function useTimer() {
       } else {
         advancingRef.current = false
       }
+    }
 
+    const tick = () => {
+      checkAdvance()
       rafRef.current = requestAnimationFrame(tick)
     }
 
     rafRef.current = requestAnimationFrame(tick)
+    const intervalId = setInterval(checkAdvance, 500)
+
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
+      clearInterval(intervalId)
     }
   }, [])
 
