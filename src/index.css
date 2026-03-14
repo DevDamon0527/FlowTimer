@@ -729,7 +729,7 @@ body {
 
 /* 알람명 텍스트 — 너비를 고정해 긴 이름이 설정 행을 2줄로 밀지 않도록 방지 */
 .alarm-select__label {
-  max-width: 72px;
+  max-width: 64px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -846,11 +846,22 @@ body {
   }
 
   .settings-panel__body {
-    padding: 8px 10px;
+    flex-wrap: nowrap; /* 알람명 길이에 관계없이 항상 한 줄 유지 */
+    padding: 6px 8px;
   }
 
   .settings-row {
-    padding: 3px 8px;
+    padding: 2px 5px;
+    gap: 8px;
+  }
+
+  .settings-alarm-group {
+    gap: 4px;
+  }
+
+  .settings-preview-btn {
+    width: 22px;
+    height: 22px;
   }
 
   .settings-sep {
