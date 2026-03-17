@@ -2,9 +2,6 @@
 
 > 공부·휴식 사이클을 자동으로 관리하는 **미니멀 집중 타이머**
 
-<!-- screenshot -->
-![main]()
-
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=flat-square&logo=React&logoColor=white)](https://reactjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=flat-square&logo=TypeScript&logoColor=white)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=flat-square&logo=Vite&logoColor=white)](https://vitejs.dev)
