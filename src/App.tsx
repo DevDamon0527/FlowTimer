@@ -63,6 +63,85 @@ function SoundOffIcon() {
   )
 }
 
+function GuideIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8"  x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  )
+}
+
+function CloseIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <line x1="18" y1="6"  x2="6"  y2="18" />
+      <line x1="6"  y1="6"  x2="18" y2="18" />
+    </svg>
+  )
+}
+
+// ── Guide Modal ───────────────────────────────────────────────────────────────
+
+function GuideModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
+  return (
+    <div
+      className="guide-backdrop"
+      onClick={onClose}
+      role="presentation"
+    >
+      <div
+        className="guide-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="guide-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="guide-modal__header">
+          <h2 id="guide-title" className="guide-modal__title">가이드</h2>
+          <button
+            className="icon-btn"
+            onClick={onClose}
+            aria-label="가이드 닫기"
+            title="닫기"
+          >
+            <CloseIcon />
+          </button>
+        </div>
+        <ul className="guide-modal__list">
+          <li className="guide-modal__item">
+            <strong>사이클 모드</strong> — 공부와 휴식이 자동으로 반복됩니다.
+          </li>
+          <li className="guide-modal__item">
+            <strong>공부 모드</strong> — 공부 시간만 1회 진행됩니다.
+          </li>
+          <li className="guide-modal__item">
+            <strong>쉬는 시간 모드</strong> — 휴식 시간만 1회 진행됩니다.
+          </li>
+          <li className="guide-modal__item">
+            종료 <strong>10초 전</strong>부터 브라우저 탭에서 경고 알림이 표시됩니다.
+          </li>
+          <li className="guide-modal__item">
+            시간이 끝나면 <strong>알람음</strong>이 재생됩니다.
+          </li>
+          <li className="guide-modal__item">
+            하단 <strong>타이머 설정</strong> 영역에서 각 모드의 시간을 조절할 수 있습니다.
+          </li>
+        </ul>
+      </div>
+    </div>
+  )
+}
+
 // ── App ───────────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -114,6 +193,10 @@ export default function App() {
     state.phase === 'study' ? state.studyMinutes : state.breakMinutes,
   )
 
+  // ── Guide modal ───────────────────────────────────────────────────────────
+  const [showGuide, setShowGuide] = useState(false)
+  const handleCloseGuide = useCallback(() => setShowGuide(false), [])
+
   // ── Control handlers ──────────────────────────────────────────────────────
 
   const handleStart  = useCallback(() => { resumeAudioContext(); dispatch({ type: 'START' }) },  [dispatch])
@@ -130,6 +213,15 @@ export default function App() {
       <header className="app-header">
         <h1 className="app-title">{state.title || '집중 타이머'}</h1>
         <div className="header-actions">
+          {/* Guide */}
+          <button
+            className="icon-btn"
+            onClick={() => setShowGuide(true)}
+            aria-label="사이트 가이드 보기"
+            title="사이트 가이드"
+          >
+            <GuideIcon />
+          </button>
           {/* Sound on/off toggle */}
           <button
             className={`icon-btn${!soundEnabled ? ' icon-btn--off' : ''}`}
@@ -198,6 +290,9 @@ export default function App() {
           onAlarmSoundChange={(v) => setAlarmSoundState(v)}
         />
       </footer>
+
+      {/* ── Guide Modal ─────────────────────────────────────────────────── */}
+      {showGuide && <GuideModal onClose={handleCloseGuide} />}
 
     </div>
   )
