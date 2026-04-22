@@ -136,7 +136,10 @@ function GuideModal({ onClose }: { onClose: () => void }) {
           <li className="guide-modal__item">
             하단 <strong>타이머 설정</strong> 영역에서 각 모드의 시간을 조절할 수 있습니다.
           </li>
-        </ul>
+          <li className="guide-modal__item">
+            문의 : devdamon0527@gmail.com
+          </li>
+        </ul>          
       </div>
     </div>
   )
